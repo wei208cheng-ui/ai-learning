@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TRAE IDE 功能變更對照表（版本／原況／變更／影響）</title>
+<style>
+  :root{
+    --ink:#1a1d21;
+    --muted:#6b7280;
+    --line:#e5e7eb;
+    --bg:#f6f7f9;
+    --card:#ffffff;
+    --accent:#2563eb;
+    --accent-soft:#eef2ff;
+    --new:#059669;
+    --new-soft:#ecfdf5;
+    --opt:#d97706;
+    --opt-soft:#fffbeb;
+    --fix:#6b7280;
+    --fix-soft:#f3f4f6;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"PingFang TC","Hiragino Sans TC","Microsoft JhengHei",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:40px 24px 72px;}
+
+  header h1{
+    font-size:26px;
+    margin:0 0 6px;
+    letter-spacing:-.01em;
+  }
+  header .sub{
+    color:var(--muted);
+    font-size:14px;
+    margin:0 0 4px;
+  }
+  header .src a{color:var(--accent);text-decoration:none;}
+  header .src a:hover{text-decoration:underline;}
+
+  .toolbar{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    align-items:center;
+    margin:24px 0 14px;
+  }
+  .search{
+    flex:1 1 260px;
+    min-width:200px;
+    padding:10px 14px;
+    border:1px solid var(--line);
+    border-radius:10px;
+    background:var(--card);
+    font-size:14px;
+    color:var(--ink);
+    outline:none;
+  }
+  .search:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft);}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;}
+  .chip{
+    border:1px solid var(--line);
+    background:var(--card);
+    color:var(--muted);
+    padding:7px 14px;
+    border-radius:999px;
+    font-size:13px;
+    cursor:pointer;
+    transition:.15s;
+    white-space:nowrap;
+  }
+  .chip:hover{border-color:#c7cbd4;color:var(--ink);}
+  .chip.on{background:var(--ink);border-color:var(--ink);color:#fff;}
+
+  .panel{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    overflow:hidden;
+    box-shadow:0 1px 2px rgba(16,24,40,.04);
+  }
+  .scroll{overflow-x:auto;}
+  table{border-collapse:collapse;width:100%;min-width:960px;font-size:14px;}
+  thead th{
+    position:sticky;top:0;z-index:2;
+    background:#fbfbfc;
+    text-align:left;
+    font-size:12.5px;
+    letter-spacing:.04em;
+    color:var(--muted);
+    font-weight:600;
+    padding:13px 16px;
+    border-bottom:1px solid var(--line);
+    white-space:nowrap;
+  }
+  tbody td{
+    padding:14px 16px;
+    border-bottom:1px solid var(--line);
+    vertical-align:top;
+  }
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:#fcfcfd;}
+  col.c-ver{width:130px;}
+  col.c-date{width:104px;}
+  col.c-feat{width:150px;}
+  col.c-old{width:190px;}
+  col.c-new{width:300px;}
+  col.c-impact{width:210px;}
+
+  .ver{
+    font-weight:600;
+    font-size:13px;
+    font-variant-numeric:tabular-nums;
+    color:var(--ink);
+    white-space:nowrap;
+  }
+  .date{color:var(--muted);font-size:12.5px;white-space:nowrap;font-variant-numeric:tabular-nums;}
+  .feat{font-weight:600;}
+  .tag{
+    display:inline-block;
+    font-size:11px;
+    font-weight:600;
+    padding:2px 8px;
+    border-radius:6px;
+    margin-bottom:6px;
+    letter-spacing:.02em;
+  }
+  .t-new{background:var(--new-soft);color:var(--new);}
+  .t-opt{background:var(--opt-soft);color:var(--opt);}
+  .t-fix{background:var(--fix-soft);color:var(--fix);}
+  .cell-sub{font-size:13px;color:var(--muted);}
+  ul.tight{margin:0;padding-left:16px;}
+  ul.tight li{margin:2px 0;}
+
+  .legend{
+    display:flex;gap:18px;flex-wrap:wrap;
+    margin:16px 2px 0;font-size:12.5px;color:var(--muted);
+  }
+  .legend b{font-weight:600;color:var(--ink);}
+
+  footer{
+    margin-top:26px;
+    font-size:12.5px;
+    color:var(--muted);
+    border-top:1px dashed var(--line);
+    padding-top:16px;
+  }
+  footer a{color:var(--accent);text-decoration:none;}
+  footer a:hover{text-decoration:underline;}
+  .empty{padding:48px;text-align:center;color:var(--muted);display:none;}
+
+  @media print{
+    body{background:#fff;}
+    .toolbar,.legend{display:none;}
+    .wrap{padding:0;}
+    .panel{border:none;box-shadow:none;}
+    thead th{position:static;background:#fff;}
+    tbody tr{break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>TRAE IDE 功能變更對照表</h1>
+    <p class="sub">欄位：版本 / 原況 / 變更 / 影響 ｜ 依官方更新日誌（2026 年 01 月 – 10 月）整理，由新到舊排列</p>
+    <p class="sub src">資料來源：<a href="https://docs.trae.ai/ide/changelog" target="_blank" rel="noopener">TRAE 官方 Changelog</a></p>
+  </header>
+
+  <div class="toolbar">
+    <input id="q" class="search" type="search" placeholder="搜尋功能、版本或關鍵字（例如：Agent 視窗、SSH、Hooks、Skills）">
+    <div class="chips" id="chips">
+      <button class="chip on" data-f="all">全部</button>
+      <button class="chip" data-f="new">新功能</button>
+      <button class="chip" data-f="opt">功能優化</button>
+      <button class="chip" data-f="fix">問題修復</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="scroll">
+      <table>
+        <colgroup>
+          <col class="c-ver"><col class="c-date"><col class="c-feat">
+          <col class="c-old"><col class="c-new"><col class="c-impact">
+        </colgroup>
+        <thead>
+          <tr>
+            <th>版本</th>
+            <th>發布日</th>
+            <th>功能</th>
+            <th>原況</th>
+            <th>變更</th>
+            <th>影響</th>
+          </tr>
+        </thead>
+        <tbody id="rows">
+
+          <tr data-t="new">
+            <td class="ver">v3.6.0</td>
+            <td class="date">2026/10/08</td>
+            <td class="feat"><span class="tag t-new">新功能</span><br>Agent 視窗</td>
+            <td class="cell-sub">TRAE 是一個 IDE，所有事情都在編輯器視窗內完成，且以「單一專案」為中心。</td>
+            <td>新增以 Agent 為中心的全域工作區。可在同一視窗指揮跨多個專案的多個 Agent，支援雲端任務與排程任務，集中管理產出物（程式碼、文件、簡報、圖片、影片）。可與 IDE 視窗自由切換，資料自動同步。</td>
+            <td>從「開專案寫程式」變成「開視窗管任務」，適合同時處理多條工作線（如制度文件＋衛教內容）。</td>
+          </tr>
+
+          <tr data-t="new">
+            <td class="ver">v3.6.0</td>
+            <td class="date">2026/10/08</td>
+            <td class="feat"><span class="tag t-new">新功能</span><br>遠端主機目錄（SSH）</td>
+            <td class="cell-sub">主要操作本機目錄，遠端檔案需先拉回本機或走既有遠端流程。</td>
+            <td>可從 Agent 視窗直接連線遠端主機上的目錄，將該目錄作為工作目錄，並在遠端環境執行任務。</td>
+            <td>程式碼放在伺服器時，不需先同步到本機即可直接作業。</td>
+          </tr>
+
+          <tr data-t="new">
+            <td class="ver">v3.6.0</td>
+            <td class="date">2026/10/08</td>
+            <td class="feat"><span class="tag t-new">新功能</span><br>單專案掛多路徑</td>
+            <td class="cell-sub">一個專案對應一個資料夾，跨倉庫需切換視窗。</td>
+            <td>支援在單一專案掛載多個路徑。任務仍以「專案」為單位組織，但檔案樹與全域搜尋可跨專案運作。</td>
+            <td>多倉庫（multi-repo）開發更順，減少視窗切換成本。</td>
+          </tr>
+
+          <tr data-t="new">
+            <td class="ver">v3.6.0</td>
+            <td class="date">2026/10/08</td>
+            <td class="feat"><span class="tag t-new">新功能</span><br>桌面伴侶機器人</td>
+            <td class="cell-sub">必須開啟主視窗才能派任務、查看進度。</td>
+            <td>新增常駐桌面的小機器人，不開主視窗也能啟動任務、追蹤 Agent 進度。</td>
+            <td>提供隨手可用的任務入口，降低切換成本。</td>
+          </tr>
+
+          <tr data-t="new">
+            <td class="ver">v3.5.97~104</td>
+            <td class="date">2026/09/20</td>
+            <td class="feat"><span class="tag t-new">新功能</span><br>外掛市集</td>
+            <td class="cell-sub">外掛取得管道零散，需自行搜尋來源。</td>
+            <td>推出官方 Marketplace，提供開發工具、生產力、內容創作等多用途的專門外掛。</td>
+            <td>需要特定能力時，可在市集內一次找到並安裝。</td>
+          </tr>
+
+          <tr data-t="opt">
+            <td class="ver">v3.5.93~96</td>
+            <td class="date">2026/09/01</td>
+            <td class="feat"><span class="tag t-opt">優化</span><br>關鍵字搜尋</td>
+            <td class="cell-sub">查詢方式較受限。</td>
+            <td>支援以關鍵字搜尋查詢內容。</td>
+            <td>查找歷史／內容更精準。</td>
+          </tr>
+
+          <tr data-t="new">
+            <td class="ver">v3.5.84~92</td>
+            <td class="date">2026/08/20</td>
+            <td class="feat"><span class="tag t-new">新功能</span><br>連接 TRAE Mobile</td>
+            <td class="cell-sub">任務與進度只能在桌面端掌握。</td>
+            <td>支援將 TRAE 連接行動版；可在電腦發起任務，於手機追蹤進度或補充指令。</td>
+            <td>離開電腦也能掌握任務，行動辦公更便利。</td>
+          </tr>
+
+          <tr data-t="new">
+            <td class="ver">v3.5.84~92</td>
+            <td class="date">2026/08/20</td>
+            <td class="feat"><span class="tag t-new">新功能</span><br>Max 模式</td>
+            <td class="cell-sub">模型能力為固定檔位。</td>
+            <td>特定模型可開啟 Max 模式，取得更強的推理表現。</td>
+            <td>遇到困難任務時可切到 Max 換取更佳結果（通常也更耗資源）。</td>
+          </tr>
+
+          <tr data-t="opt">
+            <td class="ver">v3.5.84~92</td>
+            <td class="date">2026/08/20</td>
+            <td class="feat"><span class="tag t-opt">優化</span><br>對話流縮圖導覽</td>
+            <td class="cell-sub">長對話需手動往上滑找特定訊息。</td>
+            <td>對話面板左側新增縮圖導覽，可一鍵跳到任一則提問。</td>
+            <td>長對話瀏覽效率明顯提升。</td>
+          </tr>
+
+          <tr data-t="new">
+            <td class="ver">v3.5.74</td>
+            <td class="date">2026/07/08</td>
+            <td class="feat"><span class="tag t-new">新功能</span><br>瀏覽器設定面板</td>
+            <td class="cell-sub">瀏覽器相關設定分散。</td>
+            <td>設定中心新增集中式瀏覽器設定面板（個人版）；Windows 版整合 MSSDK。</td>
+            <td>Browser Use 相關設定集中管理，調整更方便。</td>
+          </tr>
+
+          <tr data-t="opt">
+            <td class="ver">v3.5.69~70</td>
+            <td class="date">2026/06/23</td>
+            <td class="feat"><span class="tag t-opt">優化</span><br>內建 Agent 整併</td>
+            <td class="cell-sub">內建多組 agent，選項較複雜。</td>
+            <td>整併內建 agent，只保留「Chat」與「Agent」兩個；同時修正 Write 工具在串流模式下編輯既有檔案的 Diff 問題。</td>
+            <td>入口更單純，減少選錯 agent 的困擾。</td>
+          </tr>
+
+          <tr data-t="new">
+            <td class="ver">v3.5.67</td>
+            <td class="date">2026/06/17</td>
+            <td class="feat"><span class="tag t-new">新功能</span><br>TRAE Enterprise</td>
+            <td class="cell-sub">以個人／團隊使用為主。</td>
+            <td>推出企業版；支援從 <code>.trae/agents</code> 目錄載入 subagent 定義檔（需在 Beta 設定開啟「Enable Subagents Directory」）；對 -1、3003 等可重試錯誤自動重試並撤回未執行的工具卡。</td>
+            <td>企業可集中管理；subagent 可自訂；錯誤處理更自動化。</td>
+          </tr>
+
+          <tr data-t="new">
+            <td class="ver">v3.5.66</td>
+            <td class="date">2026/06/10</td>
+            <td class="feat"><span class="tag t-new">新功能</span><br>Hooks</td>
+            <td class="cell-sub">Agent 行為難以「保證」在某些時點執行特定動作。</td>
+            <td>支援 Hooks：使用者自訂的 shell 指令，在 TRAE 生命週期特定階段自動執行，提供對 Agent 行為的確定性控制。另逐步取消 Agent Delete 工具的自動執行，刪除的檔案可在系統回收桶找到。</td>
+            <td>用規則強制某些動作一定被執行；誤刪風險降低。</td>
+          </tr>
+
+          <tr data-t="new">
+            <td class="ver">v3.5.58</td>
+            <td class="date">2026/05/15</td>
+            <td class="feat"><span class="tag t-new">新功能</span><br>影片理解</td>
+            <td class="cell-sub">Kimi K2.5 / K2.6 僅支援文字。</td>
+            <td>Kimi K2.5 / K2.6 模型支援影片理解。</td>
+            <td>可直接丟影片讓模型理解內容。</td>
+          </tr>
+
+          <tr data-t="opt">
+            <td class="ver">v3.5.56</td>
+            <td class="date">2026/05/08</td>
+            <td class="feat"><span class="tag t-opt">優化</span><br>Agent 整併與改名</td>
+            <td class="cell-sub">Builder 與 Builder with MCP 並存；SOLO Coder 命名。</td>
+            <td>Builder 與 Builder with MCP 併入 Agent；SOLO Coder 改名 SOLO Agent。專案指令檔 <code>.trae/commands/</code> 支援最多三層巢狀目錄。</td>
+            <td>命名與入口簡化；指令檔可依目錄分層管理。</td>
+          </tr>
+
+          <tr data-t="new">
+            <td class="ver">v3.5.54</td>
+            <td class="date">2026/04/28</td>
+            <td class="feat"><span class="tag t-new">新功能</span><br>Slash 指令</td>
+            <td class="cell-sub">常用指示需每次重打。</td>
+            <td>支援自訂 Slash 指令，把常用指示或動作封裝成指令；設定面板重新歸類為 Index &amp; Docs、Skills &amp; Commands、Rules。</td>
+            <td>重複性工作可一鍵套用；設定項目更好找。</td>
+          </tr>
+
+          <tr data-t="new">
+            <td class="ver">v3.5.51</td>
+            <td class="date">2026/04/14</td>
+            <td class="feat"><span class="tag t-new">新功能</span><br>Rules 強化</td>
+            <td class="cell-sub">規則僅能以單層方式管理，缺乏模組化與 Git 訊息規範。</td>
+            <td>
+              <ul class="tight">
+                <li>支援規則巢狀：<code>.trae/rules/</code> 可建子資料夾，系統遞迴讀取最多 3 層。</li>
+                <li>支援子目錄規則：專案任一子目錄可建 <code>.trae/rules/</code>，套用於該模組。</li>
+                <li>原始碼控制面板新增「設定 Commit Message 生成規則」入口。</li>
+                <li>MCP 支援完整 OAuth（授權／執行／呼叫／撤銷）。</li>
+                <li>自訂模型可設定自訂請求 URL。</li>
+              </ul>
+            </td>
+            <td>規則可依模組分層治理；Git 提交訊息可統一風格；MCP 授權流程完整；可接自架模型端點。</td>
+          </tr>
+
+          <tr data-t="opt">
+            <td class="ver">v3.5.47</td>
+            <td class="date">2026/04/09</td>
+            <td class="feat"><span class="tag t-opt">優化</span><br>自動開啟終端</td>
+            <td class="cell-sub">Agent 執行終端命令時，終端不會自動顯示。</td>
+            <td>對話流設定新增「執行命令時自動打開終端」選項，開啟後執行命令時自動顯示對應終端。</td>
+            <td>可即時看到命令執行狀況，便於除錯。</td>
+          </tr>
+
+          <tr data-t="new">
+            <td class="ver">v3.5.44</td>
+            <td class="date">2026/04/02</td>
+            <td class="feat"><span class="tag t-new">新功能</span><br>Skills 目錄 / Commit 規則</td>
+            <td class="cell-sub">Skills 載入位置固定；Git commit 訊息無法規範。</td>
+            <td>支援從 <code>.agents/skills</code> 目錄載入技能；支援設定 AI 生成 Git commit 訊息的規則。</td>
+            <td>技能可放在通用目錄被工具共用；提交訊息符合團隊規範。</td>
+          </tr>
+
+          <tr data-t="opt">
+            <td class="ver">v3.5.39~41</td>
+            <td class="date">2026/03/21</td>
+            <td class="feat"><span class="tag t-opt">優化</span><br>終端機唯讀重構</td>
+            <td class="cell-sub">Agent 終端執行效能與穩定性不足，長時任務管理不易。</td>
+            <td>終端執行重構為唯讀架構（逐步推出），效能與穩定性提升；新增終端命令卡片與背景任務塢，管理長時間命令；修正大量終端卡片造成的閃爍。<br>（如遇問題可於 設定 &gt; 對話 &gt; 終端機偏好 還原。）</td>
+            <td>長時間任務更好管理，畫面更穩定。此版同時新增資源管理器的 CPU／記憶體 AI 診斷。</td>
+          </tr>
+
+          <tr data-t="new">
+            <td class="ver">v3.5.35 / v3.5.37</td>
+            <td class="date">2026/03/05</td>
+            <td class="feat"><span class="tag t-new">新功能</span><br>Markdown 預覽</td>
+            <td class="cell-sub">Markdown 只能看原始碼。</td>
+            <td>編輯器可直接預覽 Markdown，並在「Preview／Markdown」間切換，可於一般設定指定預設顯示模式；SOLO 模式開啟 Markdown 預設為即時可編輯預覽。</td>
+            <td>寫文件所見即所得，適合報告與衛教稿撰寫。</td>
+          </tr>
+
+          <tr data-t="new">
+            <td class="ver">v3.5.31</td>
+            <td class="date">2026/02/12</td>
+            <td class="feat"><span class="tag t-new">新功能</span><br>SOLO Spec 模式</td>
+            <td class="cell-sub">SOLO Coder 以 Plan 模式切換。</td>
+            <td>新增 Spec 模式；移除 Plan 模式切換鈕，改用 <code>/plan</code> 與 <code>/spec</code> 指令切換模式；終端體驗優化。</td>
+            <td>規格化開發流程更完整，模式切換更直覺。</td>
+          </tr>
+
+          <tr data-t="opt">
+            <td class="ver">v3.5.26</td>
+            <td class="date">2026/01/30</td>
+            <td class="feat"><span class="tag t-opt">優化</span><br>對話流操作</td>
+            <td class="cell-sub">任務執行中無法即時管理當前訊息。</td>
+            <td>任務執行期間可複製、刪除、回退當前訊息；終端命令執行體驗優化。</td>
+            <td>修正方向不必重開對話，節省時間。</td>
+          </tr>
+
+          <tr data-t="new">
+            <td class="ver">v3.5.24~25</td>
+            <td class="date">2026/01/23</td>
+            <td class="feat"><span class="tag t-new">新功能</span><br>Skills 強化</td>
+            <td class="cell-sub">Skills 僅能在特定範圍使用。</td>
+            <td>
+              <ul class="tight">
+                <li>支援全域與專案技能，可手動啟停，可在 IDE 模式與自訂 agent 使用。</li>
+                <li>支援專案層級 MCP。</li>
+                <li>AI 在終端執行的命令不再寫入終端歷史。</li>
+                <li>AI 對話流可渲染 LaTeX 公式。</li>
+                <li>macOS 版新增狀態列；歡迎頁與設定支援 IntelliJ 快捷鍵。</li>
+              </ul>
+            </td>
+            <td>技能可跨專案重用且可自由控管；MCP 可跟專案走；公式顯示正常。</td>
+          </tr>
+
+          <tr data-t="new">
+            <td class="ver">v3.5.21</td>
+            <td class="date">2026/01/13</td>
+            <td class="feat"><span class="tag t-new">新功能</span><br>Skills 建立與 SOLO 使用</td>
+            <td class="cell-sub">建立技能的方式有限。</td>
+            <td>支援手動上傳並新增技能，且可在 SOLO 模式中使用。</td>
+            <td>可把自己慣用的流程封裝成技能，反覆套用。</td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+    <div class="empty" id="empty">沒有符合條件的項目，請調整搜尋或篩選。</div>
+  </div>
+
+  <div class="legend">
+    <span><b>新功能</b>：新增的能力或模組</span>
+    <span><b>功能優化</b>：既有功能的改善或整併</span>
+    <span>本表未列出純 Hotfix（僅修復已知問題）之版本</span>
+  </div>
+
+  <footer>
+    資料來源：<a href="https://docs.trae.ai/ide/changelog" target="_blank" rel="noopener">TRAE 官方 Changelog</a>（英文版）／
+    <a href="https://docs.trae.ai/ide/changelog?_lang=zh" target="_blank" rel="noopener">更新日誌（中文版）</a>。
+    本表僅整理 2026 年 01 月考至 10 月的功能發布，版本號與日期依官方公告；「影響」欄為依功能性質之解讀，非官方原文。
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  var q = document.getElementById('q');
+  var chips = document.getElementById('chips');
+  var rows = Array.prototype.slice.call(document.querySelectorAll('#rows tr'));
+  var empty = document.getElementById('empty');
+  var filter = 'all';
+
+  function apply(){
+    var kw = (q.value || '').trim().toLowerCase();
+    var shown = 0;
+    rows.forEach(function(tr){
+      var type = tr.getAttribute('data-t') || '';
+      var typeOk = (filter === 'all') || (filter === 'fix' ? true : type === filter);
+      var textOk = !kw || tr.textContent.toLowerCase().indexOf(kw) > -1;
+      var ok = typeOk && textOk;
+      tr.style.display = ok ? '' : 'none';
+      if(ok) shown++;
+    });
+    empty.style.display = shown ? 'none' : 'block';
+  }
+
+  q.addEventListener('input', apply);
+  chips.addEventListener('click', function(e){
+    var btn = e.target.closest('.chip');
+    if(!btn) return;
+    Array.prototype.forEach.call(chips.querySelectorAll('.chip'), function(c){ c.classList.remove('on'); });
+    btn.classList.add('on');
+    filter = btn.getAttribute('data-f');
+    apply();
+  });
+})();
+</script>
+</body>
+</html>
