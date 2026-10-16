@@ -4,6 +4,24 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TRAE IDE 功能變更對照表（版本／原況／變更／影響）</title>
+<meta name="description" content="整理 TRAE IDE 2026 年 01–10 月官方更新日誌共 26 項功能，用「版本 / 原況 / 變更 / 影響」一眼看懂改了什麼。">
+<link rel="canonical" href="https://wei208cheng-ui.github.io/ai-learning/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="TRAE IDE 功能變更對照表">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:title" content="TRAE IDE 功能變更對照表（版本／原況／變更／影響）">
+<meta property="og:description" content="整理 TRAE IDE 2026 年 01–10 月官方更新日誌共 26 項功能，用「版本 / 原況 / 變更 / 影響」一眼看懂改了什麼。">
+<meta property="og:url" content="https://wei208cheng-ui.github.io/ai-learning/">
+<meta property="og:image" content="https://wei208cheng-ui.github.io/ai-learning/og-image.png">
+<meta property="og:image:secure_url" content="https://wei208cheng-ui.github.io/ai-learning/og-image.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="TRAE IDE 功能變更對照表">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="TRAE IDE 功能變更對照表（版本／原況／變更／影響）">
+<meta name="twitter:description" content="整理 TRAE IDE 2026 年 01–10 月官方更新日誌共 26 項功能，用「版本 / 原況 / 變更 / 影響」一眼看懂改了什麼。">
+<meta name="twitter:image" content="https://wei208cheng-ui.github.io/ai-learning/og-image.png">
 <style>
   :root{
     --ink:#1a1d21;
@@ -77,6 +95,55 @@
   }
   .chip:hover{border-color:#c7cbd4;color:var(--ink);}
   .chip.on{background:var(--ink);border-color:var(--ink);color:#fff;}
+
+  .share{
+    display:flex;
+    gap:24px;
+    align-items:center;
+    margin-top:22px;
+    padding:20px 22px;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    box-shadow:0 1px 2px rgba(16,24,40,.04);
+  }
+  .share-qr{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:8px;}
+  .share-qr img{
+    display:block;width:132px;height:132px;
+    border:1px solid var(--line);border-radius:10px;background:#fff;padding:6px;
+  }
+  .share-qr span{font-size:12px;color:var(--muted);}
+  .share-txt{flex:1 1 auto;min-width:0;}
+  .share-txt h2{font-size:16px;margin:0 0 6px;}
+  .share-txt p{font-size:13.5px;color:var(--muted);margin:0 0 12px;}
+  .share-row{display:flex;gap:8px;flex-wrap:wrap;}
+  .share-input{
+    flex:1 1 300px;min-width:200px;
+    padding:9px 12px;
+    border:1px solid var(--line);border-radius:9px;
+    background:#fbfbfc;color:var(--ink);
+    font-size:13px;outline:none;
+  }
+  .share-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft);}
+  .copy-btn{
+    padding:9px 18px;
+    border:1px solid var(--ink);border-radius:9px;
+    background:var(--ink);color:#fff;
+    font-size:13px;font-weight:600;cursor:pointer;
+    transition:.15s;white-space:nowrap;
+  }
+  .copy-btn:hover{opacity:.86;}
+  .copy-btn.done{background:var(--new);border-color:var(--new);}
+  .share-links{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px;}
+  .share-links a{
+    font-size:13px;color:var(--accent);text-decoration:none;
+    border-bottom:1px dashed rgba(37,99,235,.4);
+  }
+  .share-links a:hover{border-bottom-style:solid;}
+  @media (max-width:640px){
+    .share{flex-direction:column;align-items:flex-start;}
+    .share-qr{align-items:flex-start;}
+  }
 
   .panel{
     background:var(--card);
@@ -157,7 +224,7 @@
 
   @media print{
     body{background:#fff;}
-    .toolbar,.legend{display:none;}
+    .toolbar,.legend,.share{display:none;}
     .wrap{padding:0;}
     .panel{border:none;box-shadow:none;}
     thead th{position:static;background:#fff;}
@@ -456,6 +523,25 @@
     <span>本表未列出純 Hotfix（僅修復已知問題）之版本</span>
   </div>
 
+  <section class="share">
+    <div class="share-qr">
+      <img src="qr.svg" alt="掃描 QR code 開啟 TRAE IDE 功能變更對照表" width="132" height="132">
+      <span>掃碼開啟本頁</span>
+    </div>
+    <div class="share-txt">
+      <h2>分享這一頁</h2>
+      <p>用手機掃左側 QR code 直接開啟，或複製網址貼到 Facebook、LINE 群組、IG 個人簡介。</p>
+      <div class="share-row">
+        <input id="shareUrl" class="share-input" type="text" readonly value="https://wei208cheng-ui.github.io/ai-learning/">
+        <button id="copyBtn" class="copy-btn" type="button">複製網址</button>
+      </div>
+      <div class="share-links">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwei208cheng-ui.github.io%2Fai-learning%2F" target="_blank" rel="noopener">分享到 Facebook</a>
+        <a href="https://social-plugins.line.me/lineit/share?url=https%3A%2F%2Fwei208cheng-ui.github.io%2Fai-learning%2F" target="_blank" rel="noopener">分享到 LINE</a>
+      </div>
+    </div>
+  </section>
+
   <footer>
     資料來源：<a href="https://docs.trae.ai/ide/changelog" target="_blank" rel="noopener">TRAE 官方 Changelog</a>（英文版）／
     <a href="https://docs.trae.ai/ide/changelog?_lang=zh" target="_blank" rel="noopener">更新日誌（中文版）</a>。
@@ -494,6 +580,31 @@
     btn.classList.add('on');
     filter = btn.getAttribute('data-f');
     apply();
+  });
+
+  var copyBtn = document.getElementById('copyBtn');
+  var shareUrl = document.getElementById('shareUrl');
+  copyBtn.addEventListener('click', function(){
+    var text = shareUrl.value;
+    function ok(){
+      copyBtn.textContent = '已複製 ✓';
+      copyBtn.classList.add('done');
+      setTimeout(function(){
+        copyBtn.textContent = '複製網址';
+        copyBtn.classList.remove('done');
+      }, 1600);
+    }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(ok, function(){ fallback(); });
+    } else {
+      fallback();
+    }
+    function fallback(){
+      shareUrl.removeAttribute('readonly');
+      shareUrl.select();
+      try{ document.execCommand('copy'); ok(); }catch(err){}
+      shareUrl.setAttribute('readonly','readonly');
+    }
   });
 })();
 </script>
